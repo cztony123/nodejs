@@ -5,7 +5,7 @@ var router = express.Router();
 router.get('/api/login', function (req, res, next) {
     res.json({
         id: 1,
-        name: '张三',
+        name: '张三2',
         age: 18
     });
 });
