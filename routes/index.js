@@ -10,6 +10,20 @@ router.get('/api/login', function (req, res, next) {
     });
 });
 
+/* 轮播图 */
+router.get('/api/swipe/list', function (req, res, next) {
+    res.send({
+        code:200,
+        data:{
+            topBar:[
+                "../public/images/lunbo1.jpg",
+                "../public/images/lunbo2.jpg",
+                "http://localhost:8081/api/lunbo1.jpg",
+            ]
+        }
+    });
+});
+
 /* tabBar */
 router.get('/api/babbar/list', function (req, res, next) {
     res.send({
