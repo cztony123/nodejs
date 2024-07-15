@@ -3,10 +3,12 @@ var router = express.Router();
 
 /* 登录 */
 router.get('/api/login', function (req, res, next) {
+    console.log('222222')
+    console.log(req)
     res.json({
         id: 1,
-        name: '张三2',
-        age: 18
+        name: '张三',
+        password: 123456
     });
 });
 
