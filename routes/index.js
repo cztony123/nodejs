@@ -16,7 +16,7 @@ router.get('/api/swipe/list', function (req, res, next) {
 });
 
 /* tabBar */
-router.get('/api/babbar/list', function (req, res, next) {
+router.get('/api/tabbar/list', function (req, res, next) {
     res.send({
         code:200,
         data:{
