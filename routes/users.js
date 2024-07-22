@@ -159,7 +159,6 @@ router.post('/api/updateUser', function (req, res, next) {
             }
             //查询数据库
             connection.query(user.queryAdd(params), function(error, results){
-                console.log(results[0].userName,'666')
                 res.send({
                     code:200,
                     success: true,
