@@ -6,24 +6,20 @@ const User = {
         return sql;
     },
 
-    //注册
+    //注册时先查询
     queryAdd(params){
+        //先查询用户名或手机号存不存在
         var sql = "select * from user where (userName = '"+params.userName+"') or tel = '"+params.tel + "'";
         return sql;
     },
-    inserUser(params){
-        //引入token包
-        let jwt = require('jsonwebtoken');
 
-        //用户信息
-        let payload =  {tel: params.tel}
+    
 
-        //口令
-        let secret = "dacihua"
-
-        //生成token 第一个参数：用户信息   第二个参数：口令    第三个参数过期时间
-        let token = jwt.sign(payload, secret)
-        return "insert into user (tel, userName, password, imgUrl, sex, token) values ('"+params.tel+"','"+params.userName+"','"+params.password+"','','','"+token+"')"
+    //修改头像
+    editUser(params){
+        //update: 更新，  user：表名，  set imgUrl: 要改哪些,  where tel:代表要改谁，   []:代表要改成什么
+        var sql = "update user set imgUrl=? where tel='"+params.tel+"', '"+[params.imgUrl]+"'";
+        return sql;
     }
 }
 
