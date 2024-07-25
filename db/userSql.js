@@ -14,11 +14,39 @@ const User = {
     },
 
     
-
     //修改头像
     editUser(params){
         //update: 更新，  user：表名，  set imgUrl: 要改哪些,  where tel:代表要改谁，   []:代表要改成什么
         var sql = "update user set imgUrl=? where tel='"+params.tel+"', '"+[params.imgUrl]+"'";
+        return sql;
+    },
+
+
+    //列表多条件模糊查询
+    queryHomeList(params){
+        let req = ``
+        if(params.title){
+            req += `title like '%${params.title}%'`
+        }
+
+        if(params.yearEra){
+            if(req){
+                req += ` and yearEra like '%${params.yearEra}%'`
+            }else{
+                req += `yearEra like '%${params.yearEra}%'`
+            }
+        }
+
+        if(params.language){
+            if(req){
+                req += ` and language like '%${params.language}%'`
+            }else{
+                req += `language like '%${params.language}%'`
+            }
+        }
+
+        const sql =  `select * from homelist where ${req} limit ${params.pageNum},${params.pageSize}`;
+        console.log(sql,'000000')
         return sql;
     }
 }
