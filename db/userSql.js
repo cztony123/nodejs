@@ -26,26 +26,26 @@ const User = {
     queryHomeList(params){
         let req = ``
         if(params.title){
-            req += `title like '%${params.title}%'`
+            req += `where title like '%${params.title}%' `
         }
 
         if(params.yearEra){
             if(req){
-                req += ` and yearEra like '%${params.yearEra}%'`
+                req += `and yearEra like '%${params.yearEra}%' `
             }else{
-                req += `yearEra like '%${params.yearEra}%'`
+                req += `where yearEra like '%${params.yearEra}%' `
             }
         }
 
         if(params.language){
             if(req){
-                req += ` and language like '%${params.language}%'`
+                req += `and language like '%${params.language}%' `
             }else{
-                req += `language like '%${params.language}%'`
+                req += `where language like '%${params.language}%' `
             }
         }
 
-        const sql =  `select * from homelist where ${req} limit ${params.pageNum},${params.pageSize}`;
+        const sql =  `select * from homelist ${req}limit ${params.pageNum},${params.pageSize}`;
         console.log(sql,'000000')
         return sql;
     }

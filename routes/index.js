@@ -71,31 +71,30 @@ router.get('/api/tabbar/list', function (req, res, next) {
 /* 列表 */
 router.get('/api/home/list', function (req, res, next) {
     //查询homeList表
-    console.log(req.query.title)
     let params = {
         title: '',
-        yearEra: '2035',
-        language: '中文',
+        yearEra: '',
+        language: '',
         pageNum: (req.query.pageNum-1)*req.query.pageSize,
         pageSize: req.query.pageSize
     }
     
 
     connection.query(queryList.queryHomeList(params), function(error, results){
-        // if(results.length > 0){
-        //     res.send({
-        //         code:200,
-        //         success: true,
-        //         data: results,
-        //         message: '请求成功',
-        //     })
-        // }else{
-        //     res.send({
-        //         code:300,
-        //         success: false,
-        //         message: '暂无数据',
-        //     })
-        // }
+        if(results.length > 0){
+            res.send({
+                code:200,
+                success: true,
+                data: results,
+                message: '请求成功',
+            })
+        }else{
+            res.send({
+                code:300,
+                success: false,
+                message: '暂无数据',
+            })
+        }
     })
 });
 
