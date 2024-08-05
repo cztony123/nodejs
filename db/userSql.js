@@ -46,9 +46,8 @@ const User = {
         }
 
         const sql =  `select * from homelist ${req}limit ${params.pageNum},${params.pageSize}`;
-        console.log(sql,'000000')
         return sql;
-    }
+    },
 }
 
 exports = module.exports = User;

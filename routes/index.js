@@ -72,9 +72,9 @@ router.get('/api/tabbar/list', function (req, res, next) {
 router.get('/api/home/list', function (req, res, next) {
     //查询homeList表
     let params = {
-        title: '',
-        yearEra: '',
+        title: req.query.title,
         language: '',
+        yearEra: '',
         pageNum: (req.query.pageNum-1)*req.query.pageSize,
         pageSize: req.query.pageSize
     }
@@ -115,6 +115,100 @@ router.get('/api/home/1/list/1', function (req, res, next) {
             ]
         }
     });
+});
+
+
+
+
+
+/* 首页 */
+router.get('/api/home', function (req, res, next) {
+    let params = {
+        startTime: req.query.startTime,
+        endTime: req.query.endTime,
+    }
+
+
+    var teaData = {
+        stock:[],
+        funds:[
+            {
+                title: '铁观音',
+                moneyNum: 0
+            },
+            {
+                title: '西湖龙井',
+                moneyNum: 0
+            },
+            {
+                title: '菊花茶',
+                moneyNum: 0
+            },
+            {
+                title: '大红袍',
+                moneyNum: 0
+            }
+        ],
+        userstate:[]
+    }
+
+    
+    //查库存
+    connection.query('select * from stock', function(error, results){
+        teaData.stock = results
+        
+    })
+
+    //查铁观音金额
+    connection.query(`select * from tieguanyin where dateTime between '${params.startTime}' and '${params.endTime}'`, function(error, results){
+        if(results.length > 0){
+            for(var i = 0; i < results.length; i++){
+                teaData.funds[0].moneyNum += results[i].moneyNum
+            }
+        }
+    })
+
+    //查龙井金额
+    connection.query(`select * from longjing where dateTime between '${params.startTime}' and '${params.endTime}'`, function(error, results){
+        if(results.length > 0){
+            for(var i = 0; i < results.length; i++){
+                teaData.funds[1].moneyNum += results[i].moneyNum
+            }
+        }
+    })
+
+    //查菊花茶金额
+    connection.query(`select * from juhuacha where dateTime between '${params.startTime}' and '${params.endTime}'`, function(error, results){
+        if(results.length > 0){
+            for(var i = 0; i < results.length; i++){
+                teaData.funds[2].moneyNum += results[i].moneyNum
+            }
+        }
+    })
+
+    //查大红袍金额
+    connection.query(`select * from dahongpao where dateTime between '${params.startTime}' and '${params.endTime}'`, function(error, results){
+        if(results.length > 0){
+            for(var i = 0; i < results.length; i++){
+                teaData.funds[3].moneyNum += results[i].moneyNum
+            }
+        }
+    })
+
+    //查用户
+    connection.query('select * from userstate', function(error, results){
+        teaData.userstate = results
+    })
+    
+
+    setTimeout(function(){
+        res.send({
+        code:200,
+        success: true,
+        data: teaData,
+        message: '请求成功',
+    })},500);
+    
 });
 
 module.exports = router;
