@@ -48,6 +48,50 @@ const User = {
         const sql =  `select * from homelist ${req}limit ${params.pageNum},${params.pageSize}`;
         return sql;
     },
+
+
+
+
+
+    //财务管理多条件模糊查询总数
+    queryOrderTotal(params){
+        let req = ``
+        if(params.orderNum){
+            req += `orderNum='${params.orderNum}' and `
+        }
+
+        if(params.userId){
+            req += `userId='${params.userId}' and `
+        }
+
+        if(params.depositType){
+            req += `depositType='${params.depositType}' and `
+        }
+
+        const sql =  `select * from depositorder where ${req}dateTime between '${params.startTime}' and '${params.endTime}'`;
+        console.log(sql)
+        return sql;
+    },
+
+    //财务管理多条件模糊查询
+    queryOrderList(params){
+        let req = ``
+        if(params.orderNum){
+            req += `orderNum='${params.orderNum}' and `
+        }
+
+        if(params.userId){
+            req += `userId='${params.userId}' and `
+        }
+
+        if(params.depositType){
+            req += `depositType='${params.depositType}' and `
+        }
+
+        const sql =  `select * from depositorder where ${req}dateTime between '${params.startTime}' and '${params.endTime}' limit ${params.pageNum},${params.pageSize}`;
+        console.log(sql)
+        return sql;
+    },
 }
 
 exports = module.exports = User;

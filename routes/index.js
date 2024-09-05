@@ -3,6 +3,7 @@ var router = express.Router();
 var connection = require('../db/sql');
 var queryList = require('../db/userSql');
 var url = require('url');
+var moment = require('moment');
 
 /* 轮播图 */
 router.get('/api/swipe/list', function (req, res, next) {
@@ -117,10 +118,6 @@ router.get('/api/home/1/list/1', function (req, res, next) {
     });
 });
 
-
-
-
-
 /* 首页 */
 router.get('/api/home', function (req, res, next) {
     let params = {
@@ -209,6 +206,84 @@ router.get('/api/home', function (req, res, next) {
         message: '请求成功',
     })},500);
     
+});
+
+/* 会员充值下拉 */
+router.get('/api/depositOrder/list', function (req, res, next) {
+    res.send({
+        code:200,
+        success: true,
+        data: [
+            {
+                id: "",
+                name: "全部",
+            },
+            {
+                id: "1",
+                name: "支付宝",
+            },
+            {
+                id: "2",
+                name: "微信",
+            },
+            {
+                id: "3",
+                name: "银行卡",
+            },
+            {
+                id: "4",
+                name: "分期",
+            },
+            {
+                id: "5",
+                name: "积分兑换",
+            },
+        ],
+        message: '请求成功',
+    })
+});
+
+
+/* 会员充值列表 */
+router.get('/api/depositOrder/data', function (req, res, next) {
+    //查询depositorder表
+    let params = {
+        orderNum: req.query.orderNum, //订单号
+        userId: req.query.userId, //会员ID
+        depositType: req.query.depositType, //类型
+        startTime: req.query.startTime,
+        endTime: req.query.endTime,
+        pageNum: (req.query.pageNum-1)*req.query.pageSize,
+        pageSize: req.query.pageSize
+    }
+
+    var total = 0
+    connection.query(queryList.queryOrderTotal(params), function(error, results){
+        total = results.length
+    })
+    
+
+    connection.query(queryList.queryOrderList(params), function(error, results){
+        results.forEach( item => {
+            item.dateTime = moment(item.dateTime).format("YYYY-MM-DD HH:mm:ss")
+        });
+        
+        if(results.length > 0){
+            res.send({
+                code:200,
+                success: true,
+                data: results,
+                total: total,
+                message: '请求成功',
+            })
+        }else{
+            res.send({
+                code:300,
+                success: false,
+                message: '暂无数据',
+            })
+        }
+    })
 });
 
 module.exports = router;
