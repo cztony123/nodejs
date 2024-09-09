@@ -321,7 +321,7 @@ router.get('/api/stock/data', function (req, res, next) {
 
 
 //修改库存
-router.post('/api/editStock', function (req, res, next) {
+router.post('/api/stock/edit', function (req, res, next) {
     if(req.headers.token){
         //获取前端传过来的参数
         let params = {
