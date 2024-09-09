@@ -328,13 +328,13 @@ router.post('/api/stock/edit', function (req, res, next) {
             id: req.body.id,
             teaName: req.body.teaName,
             unit: req.body.unit,
-            rating: req.body.rating,
+            level: req.body.level,
             reality: req.body.reality,
             totalCost: req.body.totalCost,
         }
 
         //开始修改
-        connection.query(`update stockquery set teaName=?,unit=?,rating=?,reality=?,totalCost=? where id=${params.id}`,[params.teaName,params.unit,params.rating,params.reality,params.totalCost,], function(error, results){
+        connection.query(`update stockquery set teaName=?,unit=?,level=?,reality=?,totalCost=? where id=${params.id}`,[params.teaName,params.unit,params.level,params.reality,params.totalCost,], function(error, results){
             res.send({
                 code:200,
                 success: true,
@@ -353,12 +353,12 @@ router.post('/api/stock/edit', function (req, res, next) {
 
 
 /* 新增库存 */
-router.post('/api/addStock', function (req, res, next) {
+router.post('/api/stock/add', function (req, res, next) {
     //接收前端传过来的值
     let params = {
         teaName: req.body.teaName,
         unit: req.body.unit,
-        rating: req.body.rating,
+        level: req.body.level,
         reality: req.body.reality,
         totalCost: req.body.totalCost,
     }
@@ -371,10 +371,10 @@ router.post('/api/addStock', function (req, res, next) {
             })
         }else{
             //要存什么字段
-            var addStock = 'insert into stockquery(id,teaName,unit,rating,reality,totalCost) values(0,?,?,?,?,?)'
+            var addStock = 'insert into stockquery(id,teaName,unit,level,reality,totalCost) values(0,?,?,?,?,?)'
 
             //要存的字段值
-            var addStockParams = [req.body.teaName, req.body.unit, req.body.rating, req.body.reality, req.body.totalCost]
+            var addStockParams = [req.body.teaName, req.body.unit, req.body.level, req.body.reality, req.body.totalCost]
            
             //开始新增
             connection.query(addStock, addStockParams, function(error, results){
@@ -390,7 +390,7 @@ router.post('/api/addStock', function (req, res, next) {
 
 
 /* 删除库存 */
-router.post('/api/delStock', function (req, res, next) {
+router.post('/api/stock/del', function (req, res, next) {
     //接收前端传过来的值
     let params = {
         id: req.body.id,
