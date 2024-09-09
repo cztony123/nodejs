@@ -50,9 +50,6 @@ const User = {
     },
 
 
-
-
-
     //财务管理多条件模糊查询总数
     queryOrderTotal(params){
         let req = ``
@@ -89,6 +86,19 @@ const User = {
         }
 
         const sql =  `select * from depositorder where ${req}dateTime between '${params.startTime}' and '${params.endTime}' limit ${params.pageNum},${params.pageSize}`;
+        console.log(sql)
+        return sql;
+    },
+
+
+    //库存查询-数据
+    queryStockList(params){
+        let req = ``
+        if(params.teaName){
+            req += `where teaName='${params.teaName}'`
+        }
+
+        const sql =  `select * from stockquery ${req}`;
         console.log(sql)
         return sql;
     },

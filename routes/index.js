@@ -286,4 +286,126 @@ router.get('/api/depositOrder/data', function (req, res, next) {
     })
 });
 
+
+
+/* 库存查询 */
+router.get('/api/stock/data', function (req, res, next) {
+    let params = {
+        teaName: req.query.teaName, //茶品名称
+    }
+    
+    var total = 0
+    connection.query(queryList.queryStockList(params), function(error, results){
+        total = results.length
+    })
+    
+
+    connection.query(queryList.queryStockList(params), function(error, results){
+        if(results.length > 0){
+            res.send({
+                code:200,
+                success: true,
+                data: results,
+                total: total,
+                message: '请求成功',
+            })
+        }else{
+            res.send({
+                code:300,
+                success: false,
+                message: '暂无数据',
+            })
+        }
+    })
+});
+
+
+//修改库存
+router.post('/api/editStock', function (req, res, next) {
+    if(req.headers.token){
+        //获取前端传过来的参数
+        let params = {
+            id: req.body.id,
+            teaName: req.body.teaName,
+            unit: req.body.unit,
+            rating: req.body.rating,
+            reality: req.body.reality,
+            totalCost: req.body.totalCost,
+        }
+
+        //开始修改
+        connection.query(`update stockquery set teaName=?,unit=?,rating=?,reality=?,totalCost=? where id=${params.id}`,[params.teaName,params.unit,params.rating,params.reality,params.totalCost,], function(error, results){
+            res.send({
+                code:200,
+                success: true,
+                message: '修改成功',
+            })
+        })
+    }else{
+        res.send({
+            code:301,
+            success: true,
+            message: 'token验证失败',
+        })
+    }
+    
+});
+
+
+/* 新增库存 */
+router.post('/api/addStock', function (req, res, next) {
+    //接收前端传过来的值
+    let params = {
+        teaName: req.body.teaName,
+        unit: req.body.unit,
+        rating: req.body.rating,
+        reality: req.body.reality,
+        totalCost: req.body.totalCost,
+    }
+
+    // 先查询茶品是否存在
+    connection.query(queryList.queryStockList(params), function(error, results){
+        if(results.length > 0){
+            res.send({
+                message: '茶品已存在',
+            })
+        }else{
+            //要存什么字段
+            var addStock = 'insert into stockquery(id,teaName,unit,rating,reality,totalCost) values(0,?,?,?,?,?)'
+
+            //要存的字段值
+            var addStockParams = [req.body.teaName, req.body.unit, req.body.rating, req.body.reality, req.body.totalCost]
+           
+            //开始新增
+            connection.query(addStock, addStockParams, function(error, results){
+                res.send({
+                    code:200,
+                    success: true,
+                    message: '添加成功',
+                })
+            })
+        }
+    })
+});
+
+
+/* 删除库存 */
+router.post('/api/delStock', function (req, res, next) {
+    //接收前端传过来的值
+    let params = {
+        id: req.body.id,
+    }
+
+    //要存什么字段
+    var delSql = `delete from stockquery where id=${params.id}`
+
+    //开始删除
+    connection.query(delSql, function(error, results){
+        res.send({
+            code:200,
+            success: true,
+            message: '删除成功',
+        })
+    })
+});
 module.exports = router;
