@@ -354,38 +354,48 @@ router.post('/api/stock/edit', function (req, res, next) {
 
 /* 新增库存 */
 router.post('/api/stock/add', function (req, res, next) {
-    //接收前端传过来的值
-    let params = {
-        teaName: req.body.teaName,
-        unit: req.body.unit,
-        level: req.body.level,
-        reality: req.body.reality,
-        totalCost: req.body.totalCost,
-    }
+    if(req.headers.token){
+        //接收前端传过来的值
+        let params = {
+            teaName: req.body.teaName,
+            unit: req.body.unit,
+            level: req.body.level,
+            reality: req.body.reality,
+            totalCost: req.body.totalCost,
+        }
 
-    // 先查询茶品是否存在
-    connection.query(queryList.queryStockList(params), function(error, results){
-        if(results.length > 0){
-            res.send({
-                message: '茶品已存在',
-            })
-        }else{
-            //要存什么字段
-            var addStock = 'insert into stockquery(id,teaName,unit,level,reality,totalCost) values(0,?,?,?,?,?)'
-
-            //要存的字段值
-            var addStockParams = [req.body.teaName, req.body.unit, req.body.level, req.body.reality, req.body.totalCost]
-           
-            //开始新增
-            connection.query(addStock, addStockParams, function(error, results){
+        // 先查询茶品是否存在
+        connection.query(queryList.queryStockList(params), function(error, results){
+            if(results.length > 0){
                 res.send({
                     code:200,
                     success: true,
-                    message: '添加成功',
+                    message: '茶品已存在',
                 })
-            })
-        }
-    })
+            }else{
+                //要存什么字段
+                var addStock = 'insert into stockquery(id,teaName,unit,level,reality,totalCost) values(0,?,?,?,?,?)'
+
+                //要存的字段值
+                var addStockParams = [req.body.teaName, req.body.unit, req.body.level, req.body.reality, req.body.totalCost]
+            
+                //开始新增
+                connection.query(addStock, addStockParams, function(error, results){
+                    res.send({
+                        code:200,
+                        success: true,
+                        message: '添加成功',
+                    })
+                })
+            }
+        })
+    }else{
+        res.send({
+            code:301,
+            success: true,
+            message: 'token验证失败',
+        })
+    }
 });
 
 
