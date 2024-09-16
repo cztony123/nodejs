@@ -66,7 +66,6 @@ const User = {
         }
 
         const sql =  `select * from depositorder where ${req}dateTime between '${params.startTime}' and '${params.endTime}'`;
-        console.log(sql)
         return sql;
     },
 
@@ -86,7 +85,6 @@ const User = {
         }
 
         const sql =  `select * from depositorder where ${req}dateTime between '${params.startTime}' and '${params.endTime}' limit ${params.pageNum},${params.pageSize}`;
-        console.log(sql)
         return sql;
     },
 

@@ -5,6 +5,7 @@ var user = require('../db/userSql');
 var jwt = require('jsonwebtoken');
 var multiparty = require('multiparty');
 const path = require('path');
+var moment = require('moment');
 
 /* 登录 */
 router.post('/api/login', function (req, res, next) {
@@ -14,7 +15,7 @@ router.post('/api/login', function (req, res, next) {
         password: req.body.password,
     }
 
-    // //查询用户名是否存在
+    //查询用户名是否存在
     connection.query(user.queryUser(params), function(error, results){
         if(results.length > 0){
             res.send({
@@ -86,14 +87,8 @@ router.post('/api/addUser', function (req, res, next) {
 });
 
 //图片上传
-router.post('/api/uploadAvatar', function (req, res, next) {
+router.post('/api/upload/avatar', function (req, res, next) {
     if(req.headers.token){
-        //获取前端传过来的token
-        let token = req.headers.token
-
-        //解析token，解析出来一个手机号和过期时间（时间戳）
-        let telToken = jwt.decode(token)
-
         //实例化图片插件
         var form = new multiparty.Form()
 
@@ -105,24 +100,13 @@ router.post('/api/uploadAvatar', function (req, res, next) {
 
             //截取生成的图片名称 path.basename()为内置方法
             var fileName = 'http://localhost/avatar/' + path.basename(filePath);
-
-            //往数据库里面存储图片路径
-            connection.query(`update user set imgUrl=? where tel=${telToken.tel}`,[fileName], function(error, results){
-                let params = {
-                    tel: telToken.tel,
-                }
-                //查询数据库
-                connection.query(user.queryAdd(params), function(error, results){
-                    res.send({
-                        code:200,
-                        success: true,
-                        data:{
-                            imgUrl: results[0].imgUrl
-                        },
-                        message: '修改成功',
-                    })
-                })
-                
+            res.send({
+                code:200,
+                success: true,
+                data:{
+                    imgUrl: fileName
+                },
+                message: '上传成功',
             })
         })
     }else{
@@ -135,44 +119,69 @@ router.post('/api/uploadAvatar', function (req, res, next) {
 });
 
 //修改用户信息
-router.post('/api/updateUser', function (req, res, next) {
+router.post('/api/user/edit', function (req, res, next) {
     if(req.headers.token){
-        //获取前端传过来的token
-        let token = req.headers.token
-
         //获取前端传过来的参数
         let params = {
+            userid: req.body.userid,
+            imgUrl: req.body.imgUrl,
             userName: req.body.userName,
             tel: req.body.tel,
-            password: req.body.password,
+            mail: req.body.mail,
             sex: req.body.sex,
-            synopsis: req.body.synopsis,
         }
-        
-        //解析token，解析出来一个手机号和过期时间（时间戳）
-        let telToken = jwt.decode(token)
 
-        //往数据库里面存储用户信息
-        connection.query(`update user set userName=?,tel=?,password=?,sex=?,synopsis=? where tel=${telToken.tel}`,[params.userName,params.tel,params.password,params.sex,params.synopsis], function(error, results){
-            let params = {
-                tel: telToken.tel,
-            }
-            //查询数据库
-            connection.query(user.queryAdd(params), function(error, results){
-                res.send({
-                    code:200,
-                    success: true,
-                    data:{
-                        userName: results[0].userName,
-                        tel: results[0].tel,
-                        password: results[0].password,
-                        sex: results[0].sex,
-                        synopsis: results[0].synopsis,
-                    },
-                    message: '修改成功',
+        //查询数据库 验证userId
+        connection.query(`select * from user where userId=${params.userid}`, function(error, results){
+            //开始修改
+            connection.query(`update user set imgUrl=?,userName=?,tel=?,mail=?,sex=? where userId=${params.userid}`,[params.imgUrl,params.userName,params.tel,params.mail,params.sex], function(error, results){
+                connection.query(`select * from user where userId=${params.userid}`, function(error, results){
+                    results.forEach( item => {
+                        item.creatDate = moment(item.creatDate).format("YYYY-MM-DD HH:mm:ss")
+                    });
+                    res.send({
+                        code:200,
+                        success: true,
+                        data: results[0],
+                        message: '修改成功',
+                    })
                 })
             })
-            
+        })
+    }else{
+        res.send({
+            code:301,
+            success: true,
+            message: '请先登录',
+        })
+    }
+    
+});
+
+//修改密码
+router.post('/api/password/edit', function (req, res, next) {
+    if(req.headers.token){
+        //获取前端传过来的参数
+        let params = {
+            userid: req.body.userid,
+            oldPassword: req.body.oldPassword,
+            newPassword: req.body.newPassword,
+        }
+
+        //查询旧密码是否和数据库的密码相同
+        connection.query(`select * from user where password = ${params.oldPassword}`, function(error, results){
+            if(results.length > 0){
+                //开始修改
+                connection.query(`update user set password=? where userId=${params.userid}`,[params.newPassword], function(error, results){
+                     
+                })
+            }else{
+                res.send({
+                    code:300,
+                    success: false,
+                    message: '旧密码不正确',
+                })
+            }
         })
     }else{
         res.send({
