@@ -173,7 +173,17 @@ router.post('/api/password/edit', function (req, res, next) {
             if(results.length > 0){
                 //开始修改
                 connection.query(`update user set password=? where userId=${params.userid}`,[params.newPassword], function(error, results){
-                     
+                    connection.query(`select * from user where userId=${params.userid}`, function(error, results){
+                        results.forEach( item => {
+                            item.creatDate = moment(item.creatDate).format("YYYY-MM-DD HH:mm:ss")
+                        });
+                        res.send({
+                            code:200,
+                            success: true,
+                            data: results[0],
+                            message: '修改成功',
+                        })
+                    })
                 })
             }else{
                 res.send({
