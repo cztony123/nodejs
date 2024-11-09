@@ -545,7 +545,7 @@ router.get('/api/game/details', function (req, res, next) {
         userId: req.query.userId, //牌局编号
     }
 
-    //初始数据 3句
+    //初始数据 3局
     var detailsList = [
         {
             list: [
@@ -554,9 +554,9 @@ router.get('/api/game/details', function (req, res, next) {
                     curr_inning: 1, //当前局
                     total_inning: 3, //当前局
                     peopleNumber: '3/3', //参与人数
-                    integral: '3', //积分
-                    winnerNum: '3', //赢家输赢
-                    otherNum: '-2', //其他玩家输赢
+                    integral: '6', //积分
+                    winnerNum: '6', //赢家输赢
+                    otherNum: '-6', //其他玩家输赢
                     userName: '大呲花', //玩家昵称
                     startTime: '2024-10-24 00:42:36', //开始时间
                     endTime: '2024-10-24 01:13:25', //结束时间
@@ -567,33 +567,33 @@ router.get('/api/game/details', function (req, res, next) {
                     userId: '56482', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/YSR7kx1qiwpoXqj8areerEZ4.jpg', //头像
-                    winnerNum: '3', //玩家输赢
-                    finalNum: '3', //最终输赢
-                    integral: '3', //积分
-                    cardType: [1,2,3,4,5,6,7,8,9],
-                    overCardType:[2,4,7,9],
+                    winnerNum: '6', //玩家输赢
+                    finalNum: '6', //最终输赢
+                    integral: '6', //积分
+                    cardType: [0,1,2,3,4,5,6,7,8,9,20,21,22,25,31,37,38,45,47,53],
+                    overCardType:[0,1,2,3,4,5,6,7,8,9,20,21,22,25,31,37,38,45,47,53],
                     result: 0//结果(0-赢家，1-输家)
                 },
                 {
                     userId: '64259', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/RXdfSDzz-yaTQClgLSForazg.jpg', //头像
-                    winnerNum: '3', //玩家输赢
-                    finalNum: '3', //最终输赢
-                    integral: '3', //积分
-                    cardType: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
-                    overCardType:[2,4,7,9],
+                    winnerNum: '-3', //玩家输赢
+                    finalNum: '-3', //最终输赢
+                    integral: '-3', //积分
+                    cardType: [2,3,10,11,14,15,18,19,22,28,36,44,45,46,47,48,49],
+                    overCardType:[14,15,18,19,44,45],
                     result: 1//结果(0-赢家，1-输家)
                 },
                 {
                     userId: '31965', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/NbGD7U2kowi731PlGkBEC6y1.jpg', //头像
-                    winnerNum: '3', //玩家输赢
-                    finalNum: '3', //最终输赢
-                    integral: '3', //积分
-                    cardType: [1,2,3,4,5,6,7,8,9], //牌型
-                    overCardType:[2,4,7,9], //已出牌型
+                    winnerNum: '-3', //玩家输赢
+                    finalNum: '-3', //最终输赢
+                    integral: '-3', //积分
+                    cardType: [2,3,10,11,14,15,18,19,22,28,36,44,45,46,47,48,49], //牌型
+                    overCardType:[2,3,8,9,18,19,36,44,49], //已出牌型
                     result: 1//结果(0-赢家，1-输家)
                 },
             ]
@@ -605,9 +605,9 @@ router.get('/api/game/details', function (req, res, next) {
                     curr_inning: 2, //当前局
                     total_inning: 3, //当前局
                     peopleNumber: '3/3', //参与人数
-                    integral: '3', //积分
-                    winnerNum: '3', //赢家输赢
-                    otherNum: '-2', //其他玩家输赢
+                    integral: '12', //积分
+                    winnerNum: '12', //赢家输赢
+                    otherNum: '12', //其他玩家输赢
                     userName: '大呲花', //玩家昵称
                     startTime: '2024-10-24 00:42:36', //开始时间
                     endTime: '2024-10-24 01:13:25', //结束时间
@@ -618,9 +618,9 @@ router.get('/api/game/details', function (req, res, next) {
                     userId: '56482', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/YSR7kx1qiwpoXqj8areerEZ4.jpg', //头像
-                    winnerNum: '3', //玩家输赢
-                    finalNum: '3', //最终输赢
-                    integral: '3', //积分
+                    winnerNum: '12', //玩家输赢
+                    finalNum: '12', //最终输赢
+                    integral: '12', //积分
                     cardType: [1,2,3,4,5,6,7,8,9],
                     overCardType:[2,4,7,9],
                     result: 0//结果(0-赢家，1-输家)
@@ -629,9 +629,9 @@ router.get('/api/game/details', function (req, res, next) {
                     userId: '64259', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/RXdfSDzz-yaTQClgLSForazg.jpg', //头像
-                    winnerNum: '3', //玩家输赢
-                    finalNum: '3', //最终输赢
-                    integral: '3', //积分
+                    winnerNum: '-6', //玩家输赢
+                    finalNum: '-6', //最终输赢
+                    integral: '-6', //积分
                     cardType: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
                     overCardType:[2,4,7,9],
                     result: 1//结果(0-赢家，1-输家)
@@ -640,9 +640,9 @@ router.get('/api/game/details', function (req, res, next) {
                     userId: '31965', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/NbGD7U2kowi731PlGkBEC6y1.jpg', //头像
-                    winnerNum: '3', //玩家输赢
-                    finalNum: '3', //最终输赢
-                    integral: '3', //积分
+                    winnerNum: '-6', //玩家输赢
+                    finalNum: '-6', //最终输赢
+                    integral: '-6', //积分
                     cardType: [1,2,3,4,5,6,7,8,9], //牌型
                     overCardType:[2,4,7,9], //已出牌型
                     result: 1//结果(0-赢家，1-输家)
@@ -656,9 +656,9 @@ router.get('/api/game/details', function (req, res, next) {
                     curr_inning: 3, //当前局
                     total_inning: 3, //当前局
                     peopleNumber: '3/3', //参与人数
-                    integral: '3', //积分
-                    winnerNum: '3', //赢家输赢
-                    otherNum: '-2', //其他玩家输赢
+                    integral: '24', //积分
+                    winnerNum: '24', //赢家输赢
+                    otherNum: '24', //其他玩家输赢
                     userName: '大呲花', //玩家昵称
                     startTime: '2024-10-24 00:42:36', //开始时间
                     endTime: '2024-10-24 01:13:25', //结束时间
@@ -669,9 +669,9 @@ router.get('/api/game/details', function (req, res, next) {
                     userId: '56482', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/YSR7kx1qiwpoXqj8areerEZ4.jpg', //头像
-                    winnerNum: '3', //玩家输赢
-                    finalNum: '3', //最终输赢
-                    integral: '3', //积分
+                    winnerNum: '24', //玩家输赢
+                    finalNum: '24', //最终输赢
+                    integral: '24', //积分
                     cardType: [1,2,3,4,5,6,7,8,9],
                     overCardType:[2,4,7,9],
                     result: 0//结果(0-赢家，1-输家)
@@ -680,9 +680,9 @@ router.get('/api/game/details', function (req, res, next) {
                     userId: '64259', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/RXdfSDzz-yaTQClgLSForazg.jpg', //头像
-                    winnerNum: '3', //玩家输赢
-                    finalNum: '3', //最终输赢
-                    integral: '3', //积分
+                    winnerNum: '-12', //玩家输赢
+                    finalNum: '-12', //最终输赢
+                    integral: '-12', //积分
                     cardType: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
                     overCardType:[2,4,7,9],
                     result: 1//结果(0-赢家，1-输家)
@@ -691,9 +691,9 @@ router.get('/api/game/details', function (req, res, next) {
                     userId: '31965', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/NbGD7U2kowi731PlGkBEC6y1.jpg', //头像
-                    winnerNum: '3', //玩家输赢
-                    finalNum: '3', //最终输赢
-                    integral: '3', //积分
+                    winnerNum: '-12', //玩家输赢
+                    finalNum: '-12', //最终输赢
+                    integral: '-12', //积分
                     cardType: [1,2,3,4,5,6,7,8,9], //牌型
                     overCardType:[2,4,7,9], //已出牌型
                     result: 1//结果(0-赢家，1-输家)
