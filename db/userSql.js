@@ -97,9 +97,8 @@ const User = {
         }
 
         const sql =  `select * from stockquery ${req}`;
-        console.log(sql)
         return sql;
-    },
+    }
 }
 
 exports = module.exports = User;

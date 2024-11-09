@@ -462,128 +462,79 @@ router.get('/api/gameManage/list', function (req, res, next) {
 /* 游戏数据列表 */
 router.get('/api/game/data', function (req, res, next) {
     let params = {
-        id: req.query.id,
-        state: req.query.state,
         gameName: req.query.gameName, //游戏名称
         gameRoomId: req.query.gameRoomId, //牌局编号
-        startTime: req.query.startTime, //牌局编号
-        endTime: req.query.endTime, //牌局编号
+        startTime: req.query.startTime, //开始时间
+        endTime: req.query.endTime, //结束时间
+        pageNum: req.query.pageNum, //第几页
+        pageSize: req.query.pageSize, //每页条数
     }
 
-    var isList = [
-        {
-            id: 1,
-            userId: '56482468',
-            gameName: '1', //游戏名称
-            userName: '大呲花', //昵称
-            gameRoomId: '627638', //牌局编号
-            participatingPeople: '3', //参与人数
-            integral: '3', //积分
-            state: '0',
-            List:[1,2,3,4,5,6,7,8,9],
-            overList:[2,4,7,9],
-            development: false, //是否开发
-            startTime: '2024-10-24 00:42:36', //开始时间
-            endTime: '2024-10-24 01:13:25', //结束时间
-        },
-        {
-            id: 2,
-            userId: '22121113',
-            gameName: '2',
-            userName: '大呲花',
-            gameRoomId: '618546',
-            participatingPeople: '2',
-            integral: '60',
-            state: '1',
-            development: true,
-            startTime: '2024-10-9 18:55:45',
-            endTime: '2024-10-9 19:16:12'
-        },
-        {
-            id: 3,
-            userId: '11214246',
-            gameName: '3',
-            userName: '大呲花',
-            gameRoomId: '362194',
-            participatingPeople: '6',
-            integral: '3',
-            state: '0',
-            development: true,
-            startTime: '2024-10-10 00:42:36',
-            endTime: '2024-10-10 01:13:25'
-        },
-        {
-            id: 4,
-            userId: '74847471',
-            gameName: '4',
-            userName: '大呲花',
-            gameRoomId: '975846',
-            participatingPeople: '5',
-            integral: '60',
-            state: '0',
-            development: true,
-            startTime: '2024-10-11 18:55:45',
-            endTime: '2024-10-11 19:16:12'
-        },
-        {
-            id: 5,
-            userId: '62131348',
-            gameName: '5',
-            userName: '大呲花',
-            gameRoomId: '556498',
-            participatingPeople: '1',
-            integral: '3',
-            state: '1',
-            development: true,
-            startTime: '2024-10-12 00:42:36',
-            endTime: '2024-10-12 01:13:25'
-        },
-        {
-            id: 6,
-            userId: '36246878',
-            gameName: '6',
-            userName: '大呲花',
-            gameRoomId: '748468',
-            participatingPeople: '1',
-            integral: '60',
-            state: '0',
-            development: true,
-            startTime: '2024-10-13 18:55:45',
-            endTime: '2024-10-13 19:16:12'
-        },
-    ]
+    let str = ``
+    if(params.orderNum){
+        str += `orderNum='${params.orderNum}' and `
+    }
 
-    if(params.id && params.state){
-        console.log(params.state, '--------------')
-        isList.forEach(item =>{
-            if(item.id == params.id){
-                item.state = params.state
-                // console.log(item, '000000')
-            }
+    if(params.userId){
+        str += `userId='${params.userId}' and `
+    }
+
+    if(params.depositType){
+        str += `depositType='${params.depositType}' and `
+    }
+
+    const sql = `select * from gamedata where ${str}startTime between '${params.startTime}' and '${params.endTime}'`;
+
+    connection.query(sql, function(error, results){
+        results.forEach( item => {
+            item.startTime = moment(item.startTime).format("YYYY-MM-DD HH:mm:ss")
+            item.endTime = moment(item.endTime).format("YYYY-MM-DD HH:mm:ss")
+        });
+        
+        if(results.length > 0){
+            res.send({
+                code:200,
+                success: true,
+                result: results,
+                total: results.length,
+                message: '请求成功',
+            })
+        }else{
+            res.send({
+                code:300,
+                success: false,
+                message: '暂无数据',
+            })
+        }
+    })
+});
+
+
+//修改状态
+router.post('/api/game/edit', function (req, res, next) {
+    if(req.headers.token){
+        //获取前端传过来的参数
+        let params = {
+            userId: req.body.userId, //会员ID
+            state: req.body.state, //状态
+        }
+
+        //开始修改
+        connection.query(`update gamedata set state=? where userId=${params.userId}`,[params.state], function(error, results){
+            res.send({
+                code:200,
+                success: true,
+                message: '修改成功',
+            })
+        })
+    }else{
+        res.send({
+            code:301,
+            success: true,
+            message: '修改成功',
         })
     }
-
-    var list = []
-
-    let startTime = moment(params.startTime).unix()
-    let endTime = moment(params.endTime).unix()
-    list = isList.filter(item => moment(item.startTime).unix() >= startTime && moment(item.endTime).unix() <= endTime)
-
-    if(params.gameName){
-        list = list.filter(item => item.gameName == params.gameName)
-    }
-    if(params.gameRoomId){
-        list = isList.filter(item => item.gameRoomId == params.gameRoomId)
-    }
-
     
-    res.send({
-        code:200,
-        success: true,
-        result: list,
-        total: list.length,
-        message: '请求成功',
-    })
 });
 
 
@@ -594,11 +545,12 @@ router.get('/api/game/details', function (req, res, next) {
         userId: req.query.userId, //牌局编号
     }
 
+    //初始数据 3句
     var detailsList = [
         {
             list: [
                 {
-                    userId: '56482468',
+                    userId: '56482',
                     curr_inning: 1, //当前局
                     total_inning: 3, //当前局
                     peopleNumber: '3/3', //参与人数
@@ -612,7 +564,7 @@ router.get('/api/game/details', function (req, res, next) {
             ],
             overList: [
                 {
-                    userId: '56482468', //会员id
+                    userId: '56482', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/YSR7kx1qiwpoXqj8areerEZ4.jpg', //头像
                     winnerNum: '3', //玩家输赢
@@ -623,7 +575,7 @@ router.get('/api/game/details', function (req, res, next) {
                     result: 0//结果(0-赢家，1-输家)
                 },
                 {
-                    userId: '64259468', //会员id
+                    userId: '64259', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/RXdfSDzz-yaTQClgLSForazg.jpg', //头像
                     winnerNum: '3', //玩家输赢
@@ -634,7 +586,7 @@ router.get('/api/game/details', function (req, res, next) {
                     result: 1//结果(0-赢家，1-输家)
                 },
                 {
-                    userId: '31965455', //会员id
+                    userId: '31965', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/NbGD7U2kowi731PlGkBEC6y1.jpg', //头像
                     winnerNum: '3', //玩家输赢
@@ -649,7 +601,7 @@ router.get('/api/game/details', function (req, res, next) {
         {
             list: [
                 {
-                    userId: '56482468',
+                    userId: '56482',
                     curr_inning: 2, //当前局
                     total_inning: 3, //当前局
                     peopleNumber: '3/3', //参与人数
@@ -663,7 +615,7 @@ router.get('/api/game/details', function (req, res, next) {
             ],
             overList: [
                 {
-                    userId: '56482468', //会员id
+                    userId: '56482', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/YSR7kx1qiwpoXqj8areerEZ4.jpg', //头像
                     winnerNum: '3', //玩家输赢
@@ -674,7 +626,7 @@ router.get('/api/game/details', function (req, res, next) {
                     result: 0//结果(0-赢家，1-输家)
                 },
                 {
-                    userId: '64259468', //会员id
+                    userId: '64259', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/RXdfSDzz-yaTQClgLSForazg.jpg', //头像
                     winnerNum: '3', //玩家输赢
@@ -685,7 +637,7 @@ router.get('/api/game/details', function (req, res, next) {
                     result: 1//结果(0-赢家，1-输家)
                 },
                 {
-                    userId: '31965455', //会员id
+                    userId: '31965', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/NbGD7U2kowi731PlGkBEC6y1.jpg', //头像
                     winnerNum: '3', //玩家输赢
@@ -700,7 +652,7 @@ router.get('/api/game/details', function (req, res, next) {
         {
             list: [
                 {
-                    userId: '56482468',
+                    userId: '56482',
                     curr_inning: 3, //当前局
                     total_inning: 3, //当前局
                     peopleNumber: '3/3', //参与人数
@@ -714,7 +666,7 @@ router.get('/api/game/details', function (req, res, next) {
             ],
             overList: [
                 {
-                    userId: '56482468', //会员id
+                    userId: '56482', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/YSR7kx1qiwpoXqj8areerEZ4.jpg', //头像
                     winnerNum: '3', //玩家输赢
@@ -725,7 +677,7 @@ router.get('/api/game/details', function (req, res, next) {
                     result: 0//结果(0-赢家，1-输家)
                 },
                 {
-                    userId: '64259468', //会员id
+                    userId: '64259', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/RXdfSDzz-yaTQClgLSForazg.jpg', //头像
                     winnerNum: '3', //玩家输赢
@@ -736,7 +688,7 @@ router.get('/api/game/details', function (req, res, next) {
                     result: 1//结果(0-赢家，1-输家)
                 },
                 {
-                    userId: '31965455', //会员id
+                    userId: '31965', //会员id
                     userName: '大呲花', //会员昵称
                     avatar: 'http://localhost/avatar/NbGD7U2kowi731PlGkBEC6y1.jpg', //头像
                     winnerNum: '3', //玩家输赢
